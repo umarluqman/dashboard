@@ -40,7 +40,11 @@ const Home: NextPage = () => {
               placeholder="Choose a round"
             >
               {rounds.map((item) => (
-                <SelectBoxItem text={item.text} value={item.value} />
+                <SelectBoxItem
+                  key={item.text}
+                  text={item.text}
+                  value={item.value}
+                />
               ))}
             </SelectBox>
           </Block>
@@ -85,7 +89,11 @@ const Home: NextPage = () => {
               rounds.slice(1).map(({ text }, index) => {
                 const isFirstIndex = index === 0;
                 return (
-                  <DonationTable roundName={text} isFirstIndex={isFirstIndex} />
+                  <DonationTable
+                    roundName={text}
+                    key={text}
+                    isFirstIndex={isFirstIndex}
+                  />
                 );
               })
             ) : (
@@ -93,6 +101,7 @@ const Home: NextPage = () => {
                 roundName={
                   rounds.find(({ value }) => value === round)?.text || ""
                 }
+                key={round}
                 isFirstIndex
               />
             )}
