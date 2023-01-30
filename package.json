@@ -13,6 +13,7 @@
     "@gitcoinco/passport-sdk-scorer": "^0.2.0",
     "@gitcoinco/passport-sdk-types": "^0.2.0",
     "@next/font": "13.1.2",
+    "@tanstack/react-table": "^8.7.8",
     "@tremor/react": "^1.6.0",
     "@types/node": "18.11.18",
     "@types/react": "18.0.26",
@@ -20,11 +21,13 @@
     "dayjs": "^1.11.7",
     "eslint": "8.32.0",
     "eslint-config-next": "13.1.2",
-    "next": "13.1.2",
+    "next": "^13.1.6",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "truncate": "^3.0.0",
     "truncate-eth-address": "^1.0.2",
-    "typescript": "4.9.4"
+    "typescript": "4.9.4",
+    "zod": "^3.20.2"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.13",

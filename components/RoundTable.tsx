@@ -66,7 +66,7 @@ export function RoundTable({
         marginTop={isFirstIndex ? "mt-1" : "mt-8"}
       >
         <Title>{roundName} Donaters</Title>
-        <Badge text="2312" color="gray" />
+        <Badge text="2312" color="fuchsia" />
       </Flex>
       <Text marginTop="mt-2">
         List of grant donaters for{" "}

@@ -19,10 +19,8 @@ export const rounds = [
 
 export const addressMetrics = [
   {
-    title: "Bulk transactions count",
-    metric: "11",
-    metricPrev: "1,134",
-    percentage: "9%",
+    title: "Wallet Creation Date",
+    metric: "31-11-2021",
   },
   {
     title: "Number of transactions",

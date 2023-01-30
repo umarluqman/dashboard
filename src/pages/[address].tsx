@@ -11,6 +11,10 @@ import {
   Badge,
   Table,
   CategoryBar,
+  DonutChart,
+  List,
+  ListItem,
+  ProgressBar,
 } from "@tremor/react";
 import type { NextPage } from "next";
 import Head from "next/head";
@@ -18,6 +22,44 @@ import React from "react";
 import { rounds, addressMetrics } from "../../data";
 import { RoundTable } from "../../components/RoundTable";
 import { Router, useRouter } from "next/router";
+
+const cities = [
+  {
+    risk_score: "High",
+    risk_count: 2,
+  },
+  {
+    risk_score: "Medium",
+    risk_count: 3,
+  },
+  {
+    risk_score: "Low",
+    risk_count: 1,
+  },
+];
+
+const riskList = [
+  {
+    name: "Bulk Donation Risk",
+    score: 45,
+    level: "$ 27,955",
+  },
+  {
+    name: "ATG Risk",
+    score: 35,
+    level: "$ 21,743",
+  },
+  {
+    name: "Behavior Risk",
+    score: 75,
+    level: "$ 46,592",
+  },
+  {
+    name: "Bulk Transfer Risk",
+    score: 68,
+    level: "$ 42,243",
+  },
+];
 
 const AddressDetails: NextPage = () => {
   const [round, setRound] = React.useState(rounds[0].value);
@@ -72,7 +114,7 @@ const AddressDetails: NextPage = () => {
             </Flex>
             <CategoryBar
               categoryPercentageValues={[25, 25, 25, 25]}
-              colors={["rose", "yellow", "orange", "emerald"]}
+              colors={["rose", "orange", "yellow", "emerald"]}
               percentageValue={62}
               showAnimation
               tooltip="62%"
@@ -89,10 +131,39 @@ const AddressDetails: NextPage = () => {
               isFirstIndex
             />
           </Card>
+          <Card>
+            <Title>Sybil Risk Scores</Title>
+
+            <List marginTop="mt-4">
+              {riskList.map((risk) => (
+                <ListItem key={risk.name}>
+                  <Block>
+                    <Flex>
+                      <Text>{risk.name}</Text>
+                      <Text>{risk.score}</Text>
+                    </Flex>
+                    <CategoryBar
+                      marginTop="mt-4"
+                      categoryPercentageValues={[33, 34, 33]}
+                      colors={["emerald", "amber", "rose"]}
+                      percentageValue={risk.score}
+                      showAnimation
+                      tooltip={`${risk.score}`}
+                      showLabels={false}
+                    />
+                  </Block>
+                </ListItem>
+              ))}
+            </List>
+          </Card>
         </ColGrid>
       </main>
     </div>
   );
 };
+
+function valueFormatter(number: number) {
+  return `${number} risk`;
+}
 
 export default AddressDetails;
