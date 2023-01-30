@@ -84,15 +84,10 @@ const AddressDetails: NextPage = () => {
           marginTop="mt-6"
         >
           {addressMetrics.map((item) => {
-            const hasPreviousMetric = item.metricPrev !== undefined;
-            const hasPercentage = item.percentage !== undefined;
             return (
               <Card key={item.title}>
                 <Flex alignItems="items-start">
                   <Text>{item.title}</Text>
-                  {hasPercentage && (
-                    <Badge text={item.percentage || ""} color="sky" />
-                  )}
                 </Flex>
                 <Flex
                   justifyContent="justify-start"
@@ -101,9 +96,6 @@ const AddressDetails: NextPage = () => {
                   truncate={true}
                 >
                   <Metric>{item.metric}</Metric>
-                  {hasPreviousMetric && (
-                    <Text truncate={true}>from {item.metricPrev}</Text>
-                  )}
                 </Flex>
               </Card>
             );

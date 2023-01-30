@@ -9,6 +9,7 @@ import {
   Flex,
   Text,
   Title,
+  Color,
 } from "@tremor/react";
 import dayjs from "dayjs";
 import { useRouter } from "next/router";
@@ -35,7 +36,12 @@ const contributionSchema = z.object({
 });
 
 const riskLevel = ["Low", "Medium", "High"];
-const colors = { Low: "emerald", Medium: "yellow", High: "rose" };
+
+const colors: Record<string, Color> = {
+  Low: "emerald",
+  Medium: "yellow",
+  High: "rose",
+};
 
 type Contribution = z.infer<typeof contributionSchema>;
 
