@@ -19,7 +19,6 @@ import Head from "next/head";
 import React from "react";
 import { rounds, categories } from "../../data";
 import { DonationTable } from "../../components/DonationTable";
-import { truncate } from "fs";
 
 const data = [
   {
@@ -192,22 +191,17 @@ const Home: NextPage = () => {
             rounds.slice(1).map(({ text }, index) => {
               const isFirstIndex = index === 0;
               return (
-                <Card marginTop="mt-6">
-                  <DonationTable
-                    roundName={text}
-                    key={text}
-                    isFirstIndex={isFirstIndex}
-                  />{" "}
+                <Card marginTop="mt-6" key={text}>
+                  <DonationTable roundName={text} isFirstIndex={isFirstIndex} />{" "}
                 </Card>
               );
             })
           ) : (
-            <Card marginTop="mt-6">
+            <Card marginTop="mt-6" key={round}>
               <DonationTable
                 roundName={
                   rounds.find(({ value }) => value === round)?.text || ""
                 }
-                key={round}
                 isFirstIndex
               />
             </Card>
