@@ -66,11 +66,7 @@ export const statusOptions = [
 export const rounds = [
   {
     text: "All Rounds",
-    value: null,
-  },
-  {
-    text: "UNICEF Round",
-    value: "unicef",
+    value: "all",
   },
   {
     text: "Fantom Round",
@@ -111,26 +107,74 @@ type Category = {
   color: Color;
 };
 
-export const categories: Category[] = [
-  {
-    title: "Suspicous Users",
-    metric: "1,456",
-    metricPrev: "4,134",
-    percentage: "12%",
-    color: "orange",
-  },
-  {
-    title: "Flagged Users",
-    metric: "933",
-    metricPrev: "4,134",
-    percentage: "34%",
-    color: "rose",
-  },
-  {
-    title: "Whitelisted Users",
-    metric: "8%",
-    metricPrev: "4,134",
-    percentage: "80%",
-    color: "sky",
-  },
-];
+export const categories: Record<string, Category[]> = {
+  ["all"]: [
+    {
+      title: "Suspicous Users",
+      metric: "1,633",
+      metricPrev: "7,509",
+      percentage: "27%",
+      color: "orange",
+    },
+    {
+      title: "Flagged Users",
+      metric: "1251",
+      metricPrev: "7,509",
+      percentage: "21%",
+      color: "rose",
+    },
+    {
+      title: "Whitelisted Users",
+      metric: "3,827",
+      metricPrev: "7,509",
+      percentage: "52%",
+      color: "sky",
+    },
+  ],
+  ["gr15"]: [
+    {
+      title: "Suspicous Users",
+      metric: "1,156",
+      metricPrev: "4,323",
+      percentage: "26.7%",
+      color: "orange",
+    },
+    {
+      title: "Flagged Users",
+      metric: "933",
+      metricPrev: "4,323",
+      percentage: "21.6%",
+      color: "rose",
+    },
+    {
+      title: "Whitelisted Users",
+      metric: "2,234",
+      metricPrev: "4,323",
+      percentage: "51.7%",
+      color: "sky",
+    },
+  ],
+  ["fantom"]: [
+    {
+      title: "Suspicous Users",
+      metric: "477",
+      metricPrev: "3,186",
+      percentage: "30%",
+      color: "orange",
+    },
+    {
+      title: "Flagged Users",
+      metric: "318",
+      metricPrev: "3,186",
+      percentage: "20%",
+      color: "rose",
+    },
+    {
+      title: "Whitelisted Users",
+      metric: "1593",
+      metricPrev: "3,186",
+      percentage: "50%",
+      color: "sky",
+    },
+  ],
+};

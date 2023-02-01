@@ -2,6 +2,7 @@ import {
   Badge,
   BarChart,
   Block,
+  Callout,
   Card,
   Col,
   ColGrid,
@@ -17,66 +18,72 @@ import {
 import type { NextPage } from "next";
 import Head from "next/head";
 import React from "react";
-import { RoundContributions } from "../../components/RoundContributions";
+import { FantomContributions } from "../../components/FantomRoundContributions";
+import { GR15Contributions } from "../../components/GR15RoundContributions";
 import { categories, riskLevel, rounds } from "../../data";
 
-const chartdata = [
-  {
-    name: "Passport Score",
-    Low: 2188,
-    Medium: 743,
-    High: 1445,
-  },
-];
-
-const data = [
-  {
-    risk_type: "Bulk Donation Risk",
-    High: 2890,
-    Medium: 1400,
-    Low: 4938,
-  },
-  {
-    risk_type: "ATG Risk",
-    High: 1890,
-    Medium: 998,
-    Low: 2938,
-  },
-  {
-    risk_type: "Behavior Risk",
-    High: 3890,
-    Medium: 2980,
-    Low: 2645,
-  },
-  {
-    risk_type: "Bulk Transfer Risk",
-    High: 3890,
-    Medium: 2980,
-    Low: 2645,
-  },
-];
-
-const passport_score_level = [
-  {
-    risk_level: "High",
-    risk_count: 16994,
-  },
-  {
-    risk_level: "Medium",
-    risk_count: 15728,
-  },
-  {
-    risk_level: "Low",
-    risk_count: 22581,
-  },
-];
+function randomIntFromInterval(min: number, max: number) {
+  // min and max included
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
 
 const valueFormatter = (number: number) => number + " Addresses";
 
 const Home: NextPage = () => {
   const [round, setRound] = React.useState(rounds[0].value);
 
-  const isAllRounds = round === null;
+  const isAllRounds = round === "all";
+
+  const passportData = [
+    {
+      name: "Passport Score",
+      Low: randomIntFromInterval(500, 3000),
+      Medium: randomIntFromInterval(500, 3000),
+      High: randomIntFromInterval(500, 3000),
+    },
+  ];
+
+  const riskData = [
+    {
+      risk_type: "Bulk Donation Risk",
+      High: randomIntFromInterval(500, 3000),
+      Medium: randomIntFromInterval(500, 3000),
+      Low: randomIntFromInterval(500, 3000),
+    },
+    {
+      risk_type: "ATG Risk",
+      High: randomIntFromInterval(500, 3000),
+      Medium: randomIntFromInterval(500, 3000),
+      Low: randomIntFromInterval(500, 3000),
+    },
+    {
+      risk_type: "Behavior Risk",
+      High: randomIntFromInterval(500, 3000),
+      Medium: randomIntFromInterval(500, 3000),
+      Low: randomIntFromInterval(500, 3000),
+    },
+    {
+      risk_type: "Bulk Transfer Risk",
+      High: randomIntFromInterval(500, 3000),
+      Medium: randomIntFromInterval(500, 3000),
+      Low: randomIntFromInterval(500, 3000),
+    },
+  ];
+
+  const passport_score_level = [
+    {
+      risk_level: "High",
+      risk_count: randomIntFromInterval(500, 3000),
+    },
+    {
+      risk_level: "Medium",
+      risk_count: randomIntFromInterval(500, 3000),
+    },
+    {
+      risk_level: "Low",
+      risk_count: randomIntFromInterval(500, 3000),
+    },
+  ];
 
   return (
     <div className="p-4">
@@ -87,7 +94,28 @@ const Home: NextPage = () => {
 
       <main className="mb-40">
         <Title>Anti-Sybil Dashboard</Title>
-        <div className="flex justify-end w-full">
+        <div className="flex justify-between items-baseline w-full">
+          <nav className="flex my-6" aria-label="Breadcrumb">
+            <ol className="inline-flex items-center space-x-1 md:space-x-3">
+              <li aria-current="page">
+                <div className="flex items-center">
+                  <svg
+                    aria-hidden="true"
+                    className="w-4 h-4 mr-2"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+                  </svg>
+                  <span className="ml-1 text-sm font-medium text-gray-500 md:ml-2 dark:text-gray-400">
+                    Home
+                  </span>
+                </div>
+              </li>
+            </ol>
+          </nav>
+
           <Block marginTop="mt-2" maxWidth="max-w-lg">
             <SelectBox
               value={round}
@@ -104,8 +132,15 @@ const Home: NextPage = () => {
             </SelectBox>
           </Block>
         </div>
+        <Callout
+          title=""
+          text="The data here is mostly not accurate, since the focus here is to showcase the dashboard UI for Sybil detection."
+          color="yellow"
+          height=""
+          marginTop="mt-6"
+        />
         <ColGrid numColsMd={3} gapX="gap-x-6" gapY="gap-y-6" marginTop="mt-6">
-          {categories.map((item) => {
+          {categories[round].map((item) => {
             const hasPreviousMetric = item.metricPrev !== undefined;
             const hasPercentage = item.percentage !== undefined;
 
@@ -138,19 +173,8 @@ const Home: NextPage = () => {
             <Card hFull>
               <Title>Passport Score</Title>
               <Text>Total addresses based on Passport score level</Text>
-
-              {/* <DonutChart
-                  marginTop="mt-12"
-                  data={passport_score_level}
-                  category="risk_count"
-                  dataKey="risk_level"
-                  valueFormatter={valueFormatter}
-                  colors={["yellow", "emerald", "rose"]}
-                  label="1231 address"
-                  height="h-52"
-                /> */}
               <BarChart
-                data={chartdata}
+                data={passportData}
                 dataKey="name"
                 categories={["Low", "Medium", "High"]}
                 colors={["rose", "yellow", "green"]}
@@ -176,7 +200,7 @@ const Home: NextPage = () => {
                   dataKey="risk_level"
                   valueFormatter={valueFormatter}
                   colors={["rose", "yellow", "emerald"]}
-                  label="1231 address"
+                  label={`${randomIntFromInterval(500, 3000)} addresses`}
                   height="h-52"
                 />
               </Flex>
@@ -189,7 +213,7 @@ const Home: NextPage = () => {
               <Text>Type of Risk by Risk Level acrosss all addresses</Text>
               <BarChart
                 marginTop="mt-4"
-                data={data}
+                data={riskData}
                 dataKey="risk_type"
                 categories={["Low", "Medium", "High"]}
                 colors={["emerald", "yellow", "rose"]}
@@ -204,25 +228,41 @@ const Home: NextPage = () => {
 
         <Block marginTop="mt-6">
           {isAllRounds ? (
-            rounds.slice(1).map(({ text }, index) => {
+            rounds.slice(1).map(({ text, value }, index) => {
               const isFirstIndex = index === 0;
               return (
                 <Card marginTop="mt-6" key={text}>
-                  <RoundContributions
-                    roundName={text}
-                    isFirstIndex={isFirstIndex}
-                  />{" "}
+                  {value === "fantom" ? (
+                    <FantomContributions
+                      roundName={text}
+                      isFirstIndex={isFirstIndex}
+                    />
+                  ) : (
+                    <GR15Contributions
+                      roundName={text}
+                      isFirstIndex={isFirstIndex}
+                    />
+                  )}
                 </Card>
               );
             })
           ) : (
             <Card marginTop="mt-6" key={round}>
-              <RoundContributions
-                roundName={
-                  rounds.find(({ value }) => value === round)?.text || ""
-                }
-                isFirstIndex
-              />
+              {round === "fantom" ? (
+                <FantomContributions
+                  roundName={
+                    rounds.find(({ value }) => value === round)?.text || ""
+                  }
+                  isFirstIndex
+                />
+              ) : (
+                <GR15Contributions
+                  roundName={
+                    rounds.find(({ value }) => value === round)?.text || ""
+                  }
+                  isFirstIndex
+                />
+              )}
             </Card>
           )}
         </Block>

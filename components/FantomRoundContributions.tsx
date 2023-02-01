@@ -16,33 +16,35 @@ import {
   Title,
 } from "@tremor/react";
 import dayjs from "dayjs";
-import { ExternalLink } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
-import truncate from "truncate";
 import truncateEthAddress from "truncate-eth-address";
 import { randomDate } from "utils";
 import { z } from "zod";
 import { riskLevel, riskOptions, scoreOptions, statusOptions } from "../data";
-import contributionGR15 from "../data/GR15_contributions.json";
-import grantsGR15 from "../data/GR15_grants_applications.json";
+// import contributionData from "../data/GR15_contributions.json";
+import isBetween from "dayjs/plugin/isBetween";
+import grantData from "../data/Fantom_grants_applications.json";
+import contributionData from "../data/Fantom_grants_votes.json";
 import { Table } from "./Table";
 
-const contributionSchema = z.object({
-  address: z.string(),
-  short_address: z.string(),
-  grant_id: z.string().optional(),
-  grant_name: z.string().optional(),
-  checkout_type: z.string(),
-  amount_in_usdt: z.string(),
-  raw_amount_in_token: z.string(),
-  token: z.string(),
-  amount_in_token_minus_gas: z.string(),
-  tx_id: z.string().optional(),
-  created_on: z.string(),
-  modified_on: z.string(),
-  tx_count: z.number(),
-});
+dayjs.extend(isBetween);
+
+const contributionSchema = z
+  .object({
+    address: z.string(),
+    grant_name: z.string().optional(),
+    amount_in_ftm: z.string(),
+    created_at: z.string(),
+    tx_count: z.number(),
+    passport_score: z.number(),
+    passport_level: z.string(),
+    risk_level: z.string(),
+    status: z.string(),
+    wallet_created_on: z.string(),
+  })
+  .passthrough();
 
 const statusList = ["Whitelist", "Flagged", "Suspicious"];
 
@@ -60,17 +62,15 @@ const status_colors: Record<string, Color> = {
 
 type Contribution = z.infer<typeof contributionSchema>;
 
-export function RoundContributions({
+export function FantomContributions({
   roundName,
   isFirstIndex,
 }: {
   roundName: string;
   isFirstIndex: boolean;
 }) {
-  const [donationDate, setDonationDate] = useState<DateRangePickerValue>([
-    new Date(2022, 1, 1),
-    new Date(),
-  ]);
+  const [contributionDate, setContributionDate] =
+    useState<DateRangePickerValue>([new Date(2022, 1, 1), new Date()]);
 
   const [status, setStatus] = useState("");
   const [risk, setRisk] = useState("");
@@ -80,7 +80,7 @@ export function RoundContributions({
   const router = useRouter();
 
   const onChangeDate = (value: DateRangePickerValue) => {
-    setDonationDate(value);
+    setContributionDate(value);
   };
 
   const [copied, setCopied] = useState(false);
@@ -97,28 +97,35 @@ export function RoundContributions({
     }, 1000);
   };
 
+  console.log("before process", contributionData);
+
   const handleViewMore = (address: string) => () => {
     router.push(`/${address}`);
   };
 
   const columns = React.useMemo<ColumnDef<Contribution>[]>(
     () => [
-      {
-        header: "Transaction ID",
-        accessorKey: "tx_id",
-      },
+      // {
+      //   header: "Contribution ID",
+      //   accessorKey: "id",
+      // },
       {
         header: "Wallet address",
-        accessorKey: "short_address",
+        accessorKey: "address",
         cell: (props) => {
           const { getValue } = props;
-
-          const shortAddress = getValue<string>();
+          const address = getValue<string>();
           return (
-            <div className="cursor-pointer flex items-center">
-              <div className="mr-1 text-blue-500">{`${shortAddress}`}</div>
-              <ExternalLink size={12} color="#3b82f6" strokeWidth={2.5} />
-            </div>
+            <Link
+              href="/[address]"
+              as={`/${address}`}
+              className="cursor-pointer flex items-center"
+            >
+              <div className="mr-1 text-blue-500">{`${truncateEthAddress(
+                address
+              )}`}</div>
+              {/* <ExternalLink size={12} color="#3b82f6" strokeWidth={2.5} /> */}
+            </Link>
           );
         },
       },
@@ -128,15 +135,15 @@ export function RoundContributions({
       },
       {
         header: "Contribution Date",
-        accessorKey: "created_on",
+        accessorKey: "created_at",
       },
       {
         header: "Grant",
         accessorKey: "grant_name",
       },
       {
-        header: "Amount (USDT)",
-        accessorKey: "amount_in_usdt",
+        header: "Amount",
+        accessorKey: "amount_in_ftm",
         textAligment: "text-right",
       },
       {
@@ -202,48 +209,36 @@ export function RoundContributions({
     []
   );
 
-  interface GrantGR15 {
-    grant_id: number;
-    active: boolean;
-    approved: boolean;
-    address: string;
-    title: string;
-    url: string;
-    description: string;
-    created_on: string;
-  }
-
-  const keys = Object.keys as <T>(o: T) => Extract<keyof T, string | number>[];
-
-  const grants = keys(grantsGR15).map((key) => grantsGR15[key]);
+  // const keys = Object.keys as <T>(o: T) => Extract<keyof T, string | number>[];
 
   const data = React.useMemo<Contribution[]>(() => {
-    return contributionGR15
+    return contributionData
       .map(
         ({
-          created_on,
-          address,
-          tx_id,
-          amount_in_usdt,
-          modified_on,
-          grant_id,
-          ...others
+          created_at,
+          source_wallet,
+          destination_wallet,
+          amount,
+          token,
+          // ...others
         }) => {
           const passport_score = Math.floor(Math.random() * (100 + 1)) + 0;
 
-          const grantName = grants.find(
-            (grant) => grant.grant_id === Number(grant_id)
-          )?.title;
-          // console.log({ grantName });
+          // const grantName = keys(grantData)
+          //   .map((key) => grantData[key])
+          //   .find((i) => i.wallet_address === destination_wallet);
+
+          const grantName = grantData.find(
+            (i) => i.wallet_address === destination_wallet
+          )!.title;
+
+          console.log({ grantName });
 
           return {
-            address,
-            created_on: dayjs(created_on).format("DD/MM/YYYY"),
-            modified_on: dayjs(modified_on).format("DD/MM/YYYY"),
-            short_address: truncateEthAddress(address),
-            tx_id: truncate(tx_id, 15),
+            address: source_wallet,
+            created_at: dayjs(created_at).format("MMM DD, YYYY"),
             tx_count: Math.floor(Math.random() * (300 + 1)) + 0,
-            amount_in_usdt: Number(amount_in_usdt).toFixed(3),
+            amount_in_ftm: amount + ` ${token}`,
             passport_score,
             passport_level:
               passport_score > 67
@@ -257,8 +252,9 @@ export function RoundContributions({
               new Date(2020, 0, 1),
               new Date()
             ).format("MMM DD, YYYY"),
+            // id: truncate(id, 15),
             grant_name: grantName,
-            ...others,
+            // ...others,
           };
         }
       )
@@ -279,10 +275,21 @@ export function RoundContributions({
           return item.status === status;
         }
         return true;
+      })
+      .filter((item) => {
+        if (contributionDate.length > 0) {
+          return dayjs(item.created_at).isBetween(
+            contributionDate[0],
+            contributionDate[1],
+            "day",
+            "[)"
+          );
+        }
+        return true;
       });
-  }, [contributionGR15, risk, score, status, grantsGR15]);
+  }, [contributionData, risk, score, status, grantData, contributionDate]);
 
-  // console.log(data);
+  console.log("after process", data);
 
   return (
     <>
@@ -369,7 +376,7 @@ export function RoundContributions({
           <Col numColSpanLg={3} numColSpanMd={2}>
             <Text>Contribution date:</Text>
             <DateRangePicker
-              value={donationDate}
+              value={contributionDate}
               onValueChange={onChangeDate}
               options={undefined}
               enableDropdown={false}
