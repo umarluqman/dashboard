@@ -12,3 +12,14 @@ There are two pages in this dashboard application:
 The most data for the dashboard is currenly mocked to show the full presentation on how anti-Sybil dashboard looks like. Some data are directly coming from the Ocean Protocol marketplace like the Fantom grants application, Fantom grants votes and GR15 contributions.
 
 In the future, the mocked data and the missing data will be replace with the on-chain data provided by Pocket Network. 
+
+## Run the development server:
+
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+```
+
