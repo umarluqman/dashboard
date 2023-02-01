@@ -112,14 +112,16 @@ export function GR15Contributions({
       },
       {
         header: "Wallet address",
-        accessorKey: "short_address",
+        accessorKey: "address",
         cell: (props) => {
           const { getValue } = props;
 
-          const shortAddress = getValue<string>();
+          const address = getValue<string>();
           return (
             <Link href="/[address]" as={`/${address}`}>
-              <div className="mr-1 text-blue-500">{`${shortAddress}`}</div>
+              <div className="mr-1 text-blue-500">{`${truncateEthAddress(
+                address
+              )}`}</div>
               {/* <ExternalLink size={12} color="#3b82f6" strokeWidth={2.5} /> */}
             </Link>
           );
