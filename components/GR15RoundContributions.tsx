@@ -232,7 +232,7 @@ export function GR15Contributions({
             created_on: dayjs(created_on).format("MMM DD, YYYY"),
             modified_on: dayjs(modified_on).format("MMM DD, YYYY"),
             short_address: truncateEthAddress(address),
-            tx_id: truncate(tx_id, 15),
+            tx_id: truncate(tx_id, 15) || "-",
             tx_count: Math.floor(Math.random() * (300 + 1)) + 0,
             amount_in_usdt: Number(amount_in_usdt).toFixed(3),
             passport_score,
@@ -248,7 +248,7 @@ export function GR15Contributions({
               new Date(2020, 0, 1),
               new Date()
             ).format("MMM DD, YYYY"),
-            grant_name: grantName,
+            grant_name: grantName ?? "-",
             ...others,
           };
         }
