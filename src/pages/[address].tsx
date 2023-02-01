@@ -1,27 +1,26 @@
 import {
-  Block,
-  Card,
-  ColGrid,
-  Metric,
-  Text,
-  Title,
-  SelectBox,
-  SelectBoxItem,
-  Flex,
   Badge,
-  Table,
+  Block,
+  Button,
+  Card,
   CategoryBar,
-  DonutChart,
+  Col,
+  ColGrid,
+  Flex,
   List,
   ListItem,
+  Metric,
   ProgressBar,
+  Text,
+  Title,
 } from "@tremor/react";
+import { ExternalLink } from "lucide-react";
 import type { NextPage } from "next";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import React from "react";
-import { rounds, addressMetrics } from "../../data";
-import { RoundTable } from "../../components/RoundTable";
-import { Router, useRouter } from "next/router";
+import { GrantContributions } from "../../components/GrantContributions";
+import { addressMetrics, rounds } from "../../data";
 
 const cities = [
   {
@@ -61,6 +60,15 @@ const riskList = [
   },
 ];
 
+const city = {
+  name: "Off Running Inc.",
+  industry: "tech",
+  sales: 984888,
+  delta: 61.3,
+  deltaType: "increase",
+  status: "emerald",
+};
+
 const AddressDetails: NextPage = () => {
   const [round, setRound] = React.useState(rounds[0].value);
   const router = useRouter();
@@ -73,16 +81,34 @@ const AddressDetails: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="">
-        <Title>Lena Mayer</Title>
-        <Text>{router.query.address}</Text>
-        <ColGrid
-          numColsMd={3}
-          numColsLg={5}
-          gapX="gap-x-6"
-          gapY="gap-y-6"
-          marginTop="mt-6"
-        >
+      <main className="mb-40">
+        <Flex justifyContent="justify-start" spaceX="space-x-4">
+          <Title>Lena Mayer</Title>
+          <Badge text="Whitelist" color="sky" />
+        </Flex>
+        <Flex>
+          <a
+            className="cursor-pointer flex items-center"
+            href={`https://etherscan.io/address/${router.query.address}`}
+            target={"_blank"}
+            rel={"noreferrer"}
+          >
+            <div className="mr-1 text-blue-500">{`${router.query.address}`}</div>
+            <ExternalLink size={12} color="#3b82f6" strokeWidth={2.5} />
+          </a>
+          <Flex justifyContent="justify-end" spaceX="space-x-4">
+            <Button variant="secondary" color="blue">
+              Mark as Suspicious
+            </Button>
+            <Button variant="secondary" color="blue">
+              Mark as Flagged
+            </Button>
+            {/* <Button variant="secondary" color="blue">
+              Mark as Whitelist
+            </Button> */}
+          </Flex>
+        </Flex>
+        <ColGrid numColsMd={4} gapX="gap-x-6" gapY="gap-y-6" marginTop="mt-6">
           {addressMetrics.map((item) => {
             return (
               <Card key={item.title}>
@@ -94,8 +120,10 @@ const AddressDetails: NextPage = () => {
                   alignItems="items-baseline"
                   spaceX="space-x-3"
                   truncate={true}
+                  marginTop="mt-3"
                 >
                   <Metric>{item.metric}</Metric>
+                  <Text>{item.extra}</Text>
                 </Flex>
               </Card>
             );
@@ -103,8 +131,10 @@ const AddressDetails: NextPage = () => {
           <Card>
             <Flex alignItems="items-start">
               <Text>Passport score</Text>
+              <Badge text="62%" color="yellow" />
             </Flex>
             <CategoryBar
+              marginTop="mt-3"
               categoryPercentageValues={[25, 25, 25, 25]}
               colors={["rose", "orange", "yellow", "emerald"]}
               percentageValue={62}
@@ -114,48 +144,52 @@ const AddressDetails: NextPage = () => {
           </Card>
         </ColGrid>
 
-        <ColGrid marginTop="mt-6" numColsMd={2} gapX="gap-x-6" gapY="gap-y-6">
-          <Card>
-            <RoundTable
-              roundName={
-                rounds.find(({ value }) => value === round)?.text || ""
-              }
-              isFirstIndex
-            />
-          </Card>
-          <Card>
-            <Title>Sybil Risk Scores</Title>
-
-            <List marginTop="mt-4">
-              {riskList.map((risk) => (
-                <ListItem key={risk.name}>
-                  <Block>
-                    <Flex>
-                      <Text>{risk.name}</Text>
-                      <Text>{risk.score}</Text>
-                    </Flex>
-                    <CategoryBar
-                      marginTop="mt-4"
-                      categoryPercentageValues={[33, 34, 33]}
-                      colors={["emerald", "amber", "rose"]}
-                      percentageValue={risk.score}
-                      showAnimation
-                      tooltip={`${risk.score}`}
-                      showLabels={false}
-                    />
-                  </Block>
-                </ListItem>
-              ))}
-            </List>
-          </Card>
+        <ColGrid marginTop="mt-6" numColsMd={3} gapX="gap-x-6" gapY="gap-y-6">
+          <Col numColSpanMd={1}>
+            <Card>
+              <Title>Sybil Risk Scores</Title>
+              <List marginTop="mt-4">
+                {riskList.map((risk) => (
+                  <ListItem key={risk.name}>
+                    <Block>
+                      <Flex>
+                        <Text>{risk.name}</Text>
+                        <Text>{risk.score + " %"}</Text>
+                      </Flex>
+                      <ProgressBar
+                        marginTop="mt-4"
+                        color={"blue"}
+                        percentageValue={risk.score}
+                        showAnimation
+                        tooltip={`${risk.score}`}
+                      />
+                    </Block>
+                  </ListItem>
+                ))}
+              </List>
+            </Card>
+          </Col>
+          <Col numColSpanMd={2}>
+            <Card>
+              <GrantContributions roundName={"GR 15 Round"} isFirstIndex />
+            </Card>
+            <Card>
+              <GrantContributions
+                roundName={"UNICEF Round"}
+                isFirstIndex={false}
+              />
+            </Card>
+            <Card>
+              <GrantContributions
+                roundName={"Fantom Round"}
+                isFirstIndex={false}
+              />
+            </Card>
+          </Col>
         </ColGrid>
       </main>
     </div>
   );
 };
-
-function valueFormatter(number: number) {
-  return `${number} risk`;
-}
 
 export default AddressDetails;

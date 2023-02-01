@@ -1,24 +1,33 @@
 import {
+  Badge,
+  BarChart,
   Block,
   Card,
+  Col,
   ColGrid,
+  DonutChart,
+  Flex,
+  Legend,
   Metric,
-  Text,
-  Title,
   SelectBox,
   SelectBoxItem,
-  Flex,
-  Badge,
-  Table,
-  BarChart,
-  DonutChart,
-  Col,
+  Text,
+  Title,
 } from "@tremor/react";
 import type { NextPage } from "next";
 import Head from "next/head";
 import React from "react";
-import { rounds, categories } from "../../data";
-import { DonationTable } from "../../components/DonationTable";
+import { RoundContributions } from "../../components/RoundContributions";
+import { categories, riskLevel, rounds } from "../../data";
+
+const chartdata = [
+  {
+    name: "Passport Score",
+    Low: 2188,
+    Medium: 743,
+    High: 1445,
+  },
+];
 
 const data = [
   {
@@ -47,7 +56,7 @@ const data = [
   },
 ];
 
-const cities = [
+const passport_score_level = [
   {
     risk_level: "High",
     risk_count: 16994,
@@ -62,8 +71,7 @@ const cities = [
   },
 ];
 
-const valueFormatter = (number: number) =>
-  Intl.NumberFormat("us").format(number).toString();
+const valueFormatter = (number: number) => number + " Addresses";
 
 const Home: NextPage = () => {
   const [round, setRound] = React.useState(rounds[0].value);
@@ -77,9 +85,8 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="">
+      <main className="mb-40">
         <Title>Anti-Sybil Dashboard</Title>
-        <Text>Lorem ipsum dolor sit amet, consetetur sadipscing elitr.</Text>
         <div className="flex justify-end w-full">
           <Block marginTop="mt-2" maxWidth="max-w-lg">
             <SelectBox
@@ -97,22 +104,18 @@ const Home: NextPage = () => {
             </SelectBox>
           </Block>
         </div>
-        <ColGrid
-          numColsMd={3}
-          numColsLg={5}
-          gapX="gap-x-6"
-          gapY="gap-y-6"
-          marginTop="mt-6"
-        >
+        <ColGrid numColsMd={3} gapX="gap-x-6" gapY="gap-y-6" marginTop="mt-6">
           {categories.map((item) => {
             const hasPreviousMetric = item.metricPrev !== undefined;
             const hasPercentage = item.percentage !== undefined;
+
+            const badgeColor = item.color;
             return (
               <Card key={item.title}>
                 <Flex alignItems="items-start">
                   <Text>{item.title}</Text>
                   {hasPercentage && (
-                    <Badge text={item.percentage || ""} color="sky" />
+                    <Badge text={item.percentage || ""} color={badgeColor} />
                   )}
                 </Flex>
                 <Flex
@@ -131,10 +134,59 @@ const Home: NextPage = () => {
           })}
         </ColGrid>
         <ColGrid numColsMd={4} gapX="gap-x-6" gapY="gap-y-6" marginTop="mt-6">
+          <Col numColSpanMd={1}>
+            <Card hFull>
+              <Title>Passport Score</Title>
+              <Text>Total addresses based on Passport score level</Text>
+
+              {/* <DonutChart
+                  marginTop="mt-12"
+                  data={passport_score_level}
+                  category="risk_count"
+                  dataKey="risk_level"
+                  valueFormatter={valueFormatter}
+                  colors={["yellow", "emerald", "rose"]}
+                  label="1231 address"
+                  height="h-52"
+                /> */}
+              <BarChart
+                data={chartdata}
+                dataKey="name"
+                categories={["Low", "Medium", "High"]}
+                colors={["rose", "yellow", "green"]}
+                marginTop="mt-6"
+                yAxisWidth="w-12"
+              />
+            </Card>
+          </Col>
+          <Col numColSpanMd={1}>
+            <Card hFull>
+              <Title>Sybil Risk Score</Title>
+              <Text>Total addresses based on risk score level</Text>
+              <Legend
+                categories={riskLevel}
+                colors={["emerald", "yellow", "rose"]}
+                marginTop="mt-6"
+              />
+              <Flex>
+                <DonutChart
+                  data={passport_score_level}
+                  marginTop="mt-12"
+                  category="risk_count"
+                  dataKey="risk_level"
+                  valueFormatter={valueFormatter}
+                  colors={["rose", "yellow", "emerald"]}
+                  label="1231 address"
+                  height="h-52"
+                />
+              </Flex>
+            </Card>
+          </Col>
+
           <Col numColSpanMd={2}>
             <Card>
-              <Title>Sybil Risks</Title>
-              <Text>Type of Risk by Risk Level</Text>
+              <Title>Sybil Risk Assessment</Title>
+              <Text>Type of Risk by Risk Level acrosss all addresses</Text>
               <BarChart
                 marginTop="mt-4"
                 data={data}
@@ -148,42 +200,6 @@ const Home: NextPage = () => {
               />
             </Card>
           </Col>
-          <Col numColSpanMd={1}>
-            <Card hFull>
-              <Title>Sybil Risk Score</Title>
-              <Text>Addresses based on risk score level</Text>
-              <Flex>
-                <DonutChart
-                  data={cities}
-                  category="risk_count"
-                  dataKey="risk_level"
-                  valueFormatter={valueFormatter}
-                  marginTop="mt-6"
-                  colors={["rose", "yellow", "emerald"]}
-                  label="1231 address"
-                  height="h-52"
-                />
-              </Flex>
-            </Card>
-          </Col>
-          <Col numColSpanMd={1}>
-            <Card hFull>
-              <Title>Passport Score</Title>
-              <Text>Addresses based on Passport score level</Text>
-              <Flex>
-                <DonutChart
-                  data={cities}
-                  category="risk_count"
-                  dataKey="risk_level"
-                  valueFormatter={valueFormatter}
-                  marginTop="mt-6"
-                  colors={["yellow", "emerald", "rose"]}
-                  label="1231 address"
-                  height="h-52"
-                />
-              </Flex>
-            </Card>
-          </Col>
         </ColGrid>
 
         <Block marginTop="mt-6">
@@ -192,13 +208,16 @@ const Home: NextPage = () => {
               const isFirstIndex = index === 0;
               return (
                 <Card marginTop="mt-6" key={text}>
-                  <DonationTable roundName={text} isFirstIndex={isFirstIndex} />{" "}
+                  <RoundContributions
+                    roundName={text}
+                    isFirstIndex={isFirstIndex}
+                  />{" "}
                 </Card>
               );
             })
           ) : (
             <Card marginTop="mt-6" key={round}>
-              <DonationTable
+              <RoundContributions
                 roundName={
                   rounds.find(({ value }) => value === round)?.text || ""
                 }

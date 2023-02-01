@@ -1,3 +1,68 @@
+import { Color } from "@tremor/react";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+dayjs.extend(relativeTime);
+import { randomDate } from "utils";
+
+export const riskLevel = ["Low", "Medium", "High"];
+
+export const scoreOptions = [
+  {
+    text: "All Score Levels",
+    value: "",
+  },
+  {
+    text: "High",
+    value: "High",
+  },
+  {
+    text: "Medium",
+    value: "Medium",
+  },
+  {
+    text: "Low",
+    value: "Low",
+  },
+];
+
+export const riskOptions = [
+  {
+    text: "All Risk Levels",
+    value: "",
+  },
+  {
+    text: "High",
+    value: "High",
+  },
+  {
+    text: "Medium",
+    value: "Medium",
+  },
+  {
+    text: "Low",
+    value: "Low",
+  },
+];
+
+export const statusOptions = [
+  {
+    text: "All Statuses",
+    value: "",
+  },
+  {
+    text: "Whitelist",
+    value: "whitelist",
+  },
+  {
+    text: "Suspicious",
+    value: "Suspicious",
+  },
+  {
+    text: "Flagged",
+    value: "Flagged",
+  },
+];
+
 export const rounds = [
   {
     text: "All Rounds",
@@ -20,43 +85,52 @@ export const rounds = [
 export const addressMetrics = [
   {
     title: "Wallet Creation Date",
-    metric: "31-11-2021",
+    metric: randomDate(new Date(2020, 0, 1), new Date()).format("MMM DD, YYYY"),
+    extra: randomDate(new Date(2020, 0, 1), new Date()).fromNow(),
   },
   {
     title: "Number of transactions",
-    metric: "933",
+    metric: Math.floor(Math.random() * (300 + 1)) + 0,
   },
-  {
-    title: "Balance",
-    metric: "24,123 DAI",
-  },
+  // {
+  //   title: "Total Balance",
+  //   metric: Math.floor(Math.random() * (100 + 1)) + 0 + " USDT",
+  // },
   {
     title: "Last activity date",
-    metric: "12-12-2021",
+    metric: randomDate(new Date(2020, 0, 1), new Date()).format("MMM DD, YYYY"),
+    extra: randomDate(new Date(2020, 0, 1), new Date()).fromNow(),
   },
 ];
 
-export const categories = [
+type Category = {
+  title: string;
+  metric: string;
+  metricPrev: string;
+  percentage: string;
+  color: Color;
+};
+
+export const categories: Category[] = [
   {
-    title: "Total Sybils",
+    title: "Suspicous Users",
     metric: "1,456",
     metricPrev: "4,134",
     percentage: "12%",
+    color: "orange",
   },
   {
-    title: "Sybil resistant users",
+    title: "Flagged Users",
     metric: "933",
+    metricPrev: "4,134",
+    percentage: "34%",
+    color: "rose",
   },
   {
-    title: "False positive rate",
+    title: "Whitelisted Users",
     metric: "8%",
-  },
-  {
-    title: "Confirmed sybil user",
-    metric: "432",
-  },
-  {
-    title: "False negative rate",
-    metric: "21%",
+    metricPrev: "4,134",
+    percentage: "80%",
+    color: "sky",
   },
 ];

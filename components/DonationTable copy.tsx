@@ -100,7 +100,7 @@ export function DonationTable({
       </Text>
       <Flex justifyContent="justify-end">
         <Block maxWidth="max-w-xs">
-          <Text>Donation date:</Text>
+          <Text>Contribution date:</Text>
           <DateRangePicker
             value={donationDate}
             onValueChange={onChangeDate}
@@ -124,7 +124,7 @@ export function DonationTable({
             <TableHeaderCell>Wallet Address</TableHeaderCell>
             <TableHeaderCell>Wallet Creation Date</TableHeaderCell>
             <TableHeaderCell>Transaction Count</TableHeaderCell>
-            <TableHeaderCell>Donation Date</TableHeaderCell>
+            <TableHeaderCell>Contribution Date</TableHeaderCell>
             <TableHeaderCell textAlignment="text-right">Amount</TableHeaderCell>
             <TableHeaderCell>Passport Score</TableHeaderCell>
             <TableHeaderCell>Link</TableHeaderCell>

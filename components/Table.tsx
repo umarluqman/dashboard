@@ -19,6 +19,12 @@ import {
   Flex,
   Text,
 } from "@tremor/react";
+import {
+  ChevronRight,
+  ChevronLeft,
+  ChevronsRight,
+  ChevronsLeft,
+} from "lucide-react";
 
 export function Table<T>({
   data,
@@ -48,6 +54,11 @@ export function Table<T>({
                 return (
                   <TableHeaderCell
                     key={header.id}
+                    textAlignment={
+                      header.column.id === "amount_in_usdt"
+                        ? "text-right"
+                        : "text-left"
+                    }
                     //   colSpan={header.colSpan}
                   >
                     {header.isPlaceholder ? null : (
@@ -70,7 +81,14 @@ export function Table<T>({
               <TableRow key={row.id}>
                 {row.getVisibleCells().map((cell) => {
                   return (
-                    <TableCell key={cell.id}>
+                    <TableCell
+                      key={cell.id}
+                      textAlignment={
+                        cell.column.id === "amount_in_usdt"
+                          ? "text-right"
+                          : "text-left"
+                      }
+                    >
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -91,17 +109,23 @@ export function Table<T>({
             onClick={() => table.setPageIndex(0)}
             disabled={!table.getCanPreviousPage()}
           >
-            {"<<"}
+            <ChevronsLeft
+              color={!table.getCanPreviousPage() ? "#6B7280" : "#374151"}
+              size={24}
+            />
           </button>
           <button
             className="border rounded p-1"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
-            {"<"}
+            <ChevronLeft
+              color={!table.getCanPreviousPage() ? "#6B7280" : "#374151"}
+              size={24}
+            />
           </button>
         </div>
-        <span className="flex items-center gap-1">
+        <span className="flex items-center gap-1 mx-4">
           <Text>Page</Text>
           <Text>
             {table.getState().pagination.pageIndex + 1} of{" "}
@@ -113,14 +137,20 @@ export function Table<T>({
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
         >
-          {">"}
+          <ChevronRight
+            color={!table.getCanNextPage() ? "#6B7280" : "#374151"}
+            size={24}
+          />
         </button>
         <button
           className="border rounded p-1"
           onClick={() => table.setPageIndex(table.getPageCount() - 1)}
           disabled={!table.getCanNextPage()}
         >
-          {">>"}
+          <ChevronsRight
+            color={!table.getCanNextPage() ? "#6B7280" : "#374151"}
+            size={24}
+          />
         </button>
       </Flex>
     </div>
