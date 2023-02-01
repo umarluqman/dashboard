@@ -76,12 +76,12 @@ const AddressDetails: NextPage = () => {
             <ExternalLink size={12} color="#3b82f6" strokeWidth={2.5} />
           </a>
           <Flex justifyContent="justify-end" spaceX="space-x-4">
-            <Button variant="secondary" color="blue">
+            {/* <Button variant="secondary" color="blue">
               Mark as Suspicious
             </Button>
             <Button variant="secondary" color="blue">
               Mark as Flagged
-            </Button>
+            </Button> */}
             {/* <Button variant="secondary" color="blue">
               Mark as Whitelist
             </Button> */}

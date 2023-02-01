@@ -307,7 +307,7 @@ export function FantomContributions({
       </Text>
       <Flex justifyContent="justify-end">
         <ColGrid numColsMd={10} numColsLg={12} gapX="gap-x-6" marginTop="mt-8">
-          <Col numColSpanLg={3} numColSpanMd={2}>
+          {/* <Col numColSpanLg={3} numColSpanMd={2}>
             <Text>Address:</Text>
             <TextInput
               marginTop="mt-2"
@@ -321,7 +321,7 @@ export function FantomContributions({
               disabled={false}
               maxWidth="max-w-none"
             />
-          </Col>
+          </Col> */}
           <Col numColSpanLg={2} numColSpanMd={2}>
             <Text>Risk Level:</Text>
             <SelectBox
